@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKY — Dual-Portal Security Simulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ═══ PORTAL SWITCHER ═══════════════════════════════════════════ -->
+<div id="switcher">
+  <div class="sw-brand">SKY // SEC-SIM</div>
+  <div class="sw-tabs">
+    <button class="sw-tab active" id="tab-hack" onclick="switchPortal('hacker')">
+      ☠ &nbsp;HACKER PORTAL
+    </button>
+    <button class="sw-tab" id="tab-soc" onclick="switchPortal('soc')">
+      <span class="sw-dot" id="sw-dot"></span>
+      🛡 &nbsp;SOC PORTAL — SKY
+      <span class="sw-notif" id="sw-badge">0</span>
+    </button>
+  </div>
+  <div class="sw-sim-label">⚠ EDUCATIONAL SIMULATION ONLY</div>
+</div>
+
+<!-- ═══ HACKER PORTAL ══════════════════════════════════════════════ -->
+<div class="portal" id="hacker-portal">
+
+  <!-- LEFT: Targets + Categories -->
+  <div class="h-left">
+    <div class="h-section-head">TARGET SYSTEMS</div>
+    <div class="target-list" id="target-list"></div>
+    <div class="h-section-head" style="margin-top:4px">ATTACK CATEGORIES</div>
+    <div class="h-cats" id="cat-list"></div>
+  </div>
+
+  <!-- CENTER: Attack Selector + Terminal -->
+  <div class="h-center">
+    <div class="attack-selector">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--h-muted);letter-spacing:2px;margin-bottom:8px">SELECT ATTACK TOOL</div>
+      <div class="attack-grid" id="attack-grid">
+        <div style="color:var(--h-muted);font-family:'Share Tech Mono',monospace;font-size:10px;padding:10px;grid-column:span 2">← Select a target and category</div>
+      </div>
+    </div>
+    <div class="attack-config" id="attack-config">
+      <span class="cfg-label">TARGET:</span>
+      <span id="cfg-target" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--h-green)">— None selected —</span>
+      <span id="cfg-params"></span>
+      <div class="stealth-bar">
+        <span class="stealth-label">STEALTH:</span>
+        <div class="stealth-dots" id="stealth-dots">
+          <div class="stealth-dot"></div><div class="stealth-dot"></div><div class="stealth-dot"></div><div class="stealth-dot"></div><div class="stealth-dot"></div>
+        </div>
+      </div>
+      <button class="btn-launch" id="btn-launch" onclick="launchAttack()" disabled>▶ LAUNCH</button>
+    </div>
+    <div class="attack-progress"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-circle r"></div><div class="term-circle y"></div><div class="term-circle g"></div>
+        <div class="term-title">ATTACK CONSOLE — SIMULATION ENVIRONMENT</div>
+      </div>
+      <div class="term-body" id="term-body">
+        <span class="tl dim">╔══════════════════════════════════════════════════════╗</span>
+        <span class="tl dim">║  SKY Security Simulation — Hacker Portal              ║</span>
+        <span class="tl dim">║  Educational use only — no real attacks executed       ║</span>
+        <span class="tl dim">╚══════════════════════════════════════════════════════╝</span>
+        <span class="tl info">  </span>
+        <span class="tl info">[*] Simulation environment initialised</span>
+        <span class="tl info">[*] Select a target system and attack to begin</span>
+        <span class="tl info">  </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Attack Log + Stats -->
+  <div class="h-right">
+    <div class="h-section-head">ATTACK LOG</div>
+    <div class="attack-log" id="attack-log">
+      <div class="no-attacks">[NO ATTACKS LAUNCHED YET]<br><br>Launch an attack to<br>see results here</div>
+    </div>
+    <div class="h-stats">
+      <div class="stat-grid-h">
+        <div class="stat-cell"><div class="sc-val" id="stat-total">0</div><div class="sc-label">LAUNCHED</div></div>
+        <div class="stat-cell"><div class="sc-val red" id="stat-det">0</div><div class="sc-label">DETECTED</div></div>
+        <div class="stat-cell"><div class="sc-val green" id="stat-undet">0</div><div class="sc-label">GHOST</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SOC / SKY PORTAL ══════════════════════════════════════════ -->
+<div class="portal" id="soc-portal" style="display:none">
+
+  <!-- SIDEBAR -->
+  <div class="s-sidebar">
+    <div class="s-logo">
+      <div class="s-logo-hex"><span>S</span></div>
+      <div><div class="s-logo-text">SKY</div><div class="s-logo-sub">SOC PLATFORM v2.1</div></div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-section">OPERATIONS</div>
+      <div class="s-nav-item active" onclick="switchSOCView('dashboard',this)">
+        <svg class="s-nav-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+        Dashboard
+      </div>
+      <div class="s-nav-item" onclick="switchSOCView('incidents',this)">
+        <svg class="s-nav-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1L15 14H1L8 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 6V9M8 11V11.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Active Incidents
+        <span class="s-nav-badge" id="inc-badge">0</span>
+      </div>
+      <div class="s-nav-item" onclick="switchSOCView('sast',this)">
+        <svg class="s-nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 8l2 2 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Detection Engine
+        <span class="s-nav-badge" id="sast-badge">0</span>
+      </div>
+      <div class="s-nav-item" onclick="switchSOCView('reports',this)">
+        <svg class="s-nav-icon" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v12H3V2z" stroke="currentColor" stroke-width="1.2"/><path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Incident Reports
+        <span class="s-nav-badge" id="rep-badge">0</span>
+      </div>
+    </nav>
+    <div class="s-sidebar-bot">
+      <div class="s-analyst">
+        <div class="s-av">AK</div>
+        <div><div class="s-an-name">A. Khan</div><div class="s-an-role">TIER 2 ANALYST</div></div>
+      </div>
+      <div class="s-conn"><div class="s-conn-dot"></div>SIEM CONNECTED</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="s-main">
+    <header class="s-topbar">
+      <span class="s-topbar-title" id="soc-view-title">DASHBOARD</span>
+      <div class="s-divider"></div>
+      <div class="threat-ind">
+        <span class="threat-lbl">THREAT LEVEL</span>
+        <span class="threat-val normal" id="threat-val">NORMAL</span>
+      </div>
+      <div class="s-divider"></div>
+      <span class="s-clock" id="s-clock">--:--:-- UTC</span>
+      <div class="s-divider"></div>
+      <button class="btn-export" onclick="exportReport()">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1v10M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        EXPORT REPORT .TXT
+      </button>
+    </header>
+
+    <div class="s-content" id="s-content">
+
+      <!-- DASHBOARD VIEW -->
+      <div id="sv-dashboard">
+        <div class="s-metrics">
+          <div class="s-metric c-red"><div class="sm-label">ACTIVE INCIDENTS</div><div class="sm-val" id="m-inc">0</div><div class="sm-sub" id="m-inc-sub">No incidents detected</div></div>
+          <div class="s-metric c-amber"><div class="sm-label">DETECTIONS TODAY</div><div class="sm-val" id="m-det">0</div><div class="sm-sub" id="m-det-sub">Simulation running</div></div>
+          <div class="s-metric c-green"><div class="sm-label">UNDETECTED ATTACKS</div><div class="sm-val" id="m-ghost">0</div><div class="sm-sub">Attacks that bypassed detection</div></div>
+          <div class="s-metric c-cyan"><div class="sm-label">DETECTION RATE</div><div class="sm-val" id="m-rate">—</div><div class="sm-sub" id="m-rate-sub">No data yet</div></div>
+        </div>
+        <div class="s-two-col">
+          <div class="s-panel">
+            <div class="sp-head"><span class="sp-title">LIVE ALERT FEED</span><span class="sp-live">● LIVE</span></div>
+            <div class="s-alert-feed" id="s-alert-feed">
+              <div style="padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--s-muted)">Awaiting detections from attack simulation...</div>
+            </div>
+          </div>
+          <div class="s-panel">
+            <div class="sp-head"><span class="sp-title">TOP TARGETED HOSTS</span></div>
+            <div id="host-bars">
+              <div style="padding:30px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--s-muted)">No targets attacked yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INCIDENTS VIEW -->
+      <div id="sv-incidents" style="display:none">
+        <div class="inc-filter-row">
+          <button class="f-btn active" onclick="filterInc('all',this)">All</button>
+          <button class="f-btn" onclick="filterInc('critical',this)">Critical</button>
+          <button class="f-btn" onclick="filterInc('high',this)">High</button>
+          <button class="f-btn" onclick="filterInc('medium',this)">Medium</button>
+          <button class="f-btn" onclick="filterInc('low',this)">Low</button>
+        </div>
+        <div class="inc-list" id="inc-list"><div class="s-empty">[ NO INCIDENTS YET ]<br>Launch attacks from the Hacker Portal<br>to generate incidents here</div></div>
+      </div>
+
+      <!-- SAST / DETECTION ENGINE VIEW -->
+      <div id="sv-sast" style="display:none">
+        <div style="margin-bottom:14px;padding:10px 14px;background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.15);border-radius:4px;font-size:11px;color:var(--s-muted);font-family:'Share Tech Mono',monospace;line-height:1.7">
+          [SAST/IDS ENGINE] Real-time analysis of network traffic and payloads. Each entry shows the exact detection signature, matched evidence, and recommended response. Used by Snort, Suricata, and SIEM platforms.
+        </div>
+        <div class="sast-list" id="sast-list"><div class="s-empty">[ DETECTION ENGINE IDLE ]<br>Signatures will appear here<br>when attacks are detected</div></div>
+      </div>
+
+      <!-- REPORTS VIEW -->
+      <div id="sv-reports" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--s-muted);letter-spacing:1px">FILED INCIDENT REPORTS — Click to expand</span>
+          <button class="btn-export" onclick="exportReport()" style="font-size:11px">⬇ DOWNLOAD ALL AS .TXT</button>
+        </div>
+        <div class="rep-list" id="rep-list"><div class="s-empty">[ NO REPORTS FILED YET ]<br>Respond to incidents to generate reports</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- RESPONSE MODAL -->
+<div id="modal-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">INCIDENT RESPONSE — FILE REPORT</span>
+      <button class="btn-close-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-inc-box" id="modal-inc-box"></div>
+      <div class="modal-section">
+        <div class="ms-title">RESPONSE ACTIONS TAKEN</div>
+        <div class="action-grid">
+          <label class="ac-check"><input type="checkbox" name="act" value="Isolate Host"><span>Isolate Host</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Block Source IP"><span>Block Source IP</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Quarantine Malware"><span>Quarantine Malware</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Escalate to Tier 3"><span>Escalate to Tier 3</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Add IOC to Blocklist"><span>Add IOC to Blocklist</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Reset Credentials"><span>Reset Credentials</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Patch Vulnerability"><span>Patch Vulnerability</span></label>
+          <label class="ac-check"><input type="checkbox" name="act" value="Forensic Image Collected"><span>Collect Forensic Image</span></label>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-title">DISPOSITION</div>
+        <div class="disp-grid">
+          <button class="disp-btn Contained" onclick="selDisp(this,'Contained')">Contained</button>
+          <button class="disp-btn Escalated" onclick="selDisp(this,'Escalated')">Escalated</button>
+          <button class="disp-btn False-Positive" onclick="selDisp(this,'False Positive')">False Positive</button>
+          <button class="disp-btn Monitoring" onclick="selDisp(this,'Monitoring')">Monitoring</button>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="ms-title">ANALYST NOTES</div>
+        <textarea class="notes-ta" id="modal-notes" placeholder="Document your findings, response steps, and any indicators for future reference..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-file" id="btn-file" onclick="fileReport()">FILE REPORT</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<script src="script.js"></script>
+</body>
+</html>
