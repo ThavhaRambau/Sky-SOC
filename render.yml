@@ -4,5 +4,5 @@ services:
     env: static
     plan: free
     buildCommand: ""        # no build step needed
-    staticPublishPath: .    # serve files from the root folder
+    staticPublishPath: .    # serve files directly from root
     autoDeploy: true
